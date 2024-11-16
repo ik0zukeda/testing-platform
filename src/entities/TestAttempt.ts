@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 import { Test } from "./Test";
 
 @Entity()
@@ -12,7 +12,11 @@ export class TestAttempt {
     @Column({ nullable: false })
     topicId: number;
 
+    @Column({ nullable: false })
+    testId: number;
+
     @ManyToOne(() => Test, { nullable: false })
+    @JoinColumn({ name: 'testId' })
     test: number;
 
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
@@ -20,6 +24,9 @@ export class TestAttempt {
 
     @Column({ nullable: false })
     score: number;
+
+    @Column({ nullable: false })
+    questionCount: number;
 
     @Column({ nullable: false })
     timeSpent: number;
@@ -30,13 +37,15 @@ export class TestAttempt {
         attemptDate: Date,
         score: number,
         testId: number,
-        timeSpent: number
+        timeSpent: number,
+        questionCount: number,
     ) {
         this.studentId = studentId;
         this.topicId = topicId;
         this.attemptDate = attemptDate;
         this.score = score;
         this.test = testId;
+        this.questionCount = questionCount;
         this.timeSpent = timeSpent;
     }
 }

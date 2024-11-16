@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="keywords"
+          content="платформа для тестирования студентов">
+    <title>Testing platform - Ошибка 404</title>
+    <link rel="icon" href="/images/logo2.jpg">
+    {{> styles}}
+    <script src="scripts/checkCookie.js"></script>
+    <script src="scripts/signOut.js"></script>
+    <script src="scripts/checkAuth.js"></script>
+
+    <!--                <link rel="stylesheet" href="/styles/outlines.css">-->
+</head>
+<body>
+<header>
+    {{>header_content}}
+    <div class="head-bar">
+
+        {{>sign_in}}
+        {{>head_nav_bar}}
+    </div>
+</header>
+<main>
+    <div class="error404">
+        <h1 class="h1-404">Ошибка 404 😿</h1>
+        <img class="404-image" src="images/grustnii-kotik-19.jpg" alt="404-image" height="600">
+        <div class="error404-text">
+            Похоже, что этой страницы здесь больше нет, а возможно, никогда и не было...
+        </div>
+        <p><a href="active_tests">На главную страницу</a></p>
+    </div>
+</main>
+<footer>
+<!--    {{>footer_bar}}-->
+
+</footer>
+</body>
+</html>

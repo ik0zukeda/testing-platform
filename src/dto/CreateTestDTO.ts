@@ -11,13 +11,13 @@ export class CreateTestDTO {
 
     @IsNumber()
     @IsNotEmpty()
-    teacherId: number;
-
-    @IsNumber()
-    @IsNotEmpty()
     questionCount: number;
 
     @IsNumber()
     @IsNotEmpty()
     attempts: number;
+
+    @IsString()
+    @IsNotEmpty()
+    group: string;
 }

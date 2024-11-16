@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="keywords"
+          content="платформа для тестирования студентов">
+    <title>Testing platform - восстановление пароля</title>
+    <link rel="icon" href="/images/logo2.jpg">
+    {{> styles}}
+    <script src="scripts/checkCookie.js"></script>
+    <script src="scripts/signOut.js"></script>
+    <script src="scripts/recover_password_after_email.js"></script>
+	<script src="scripts/checkAuth.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <!--            <link rel="stylesheet" href="/styles/outlines.css">-->
+</head>
+<body>
+<header>
+    {{>header_content}}
+    <div class="head-bar">
+	</div>
+</header>
+<main>
+    <div class="recover-form">
+        <h2>Восстановить пароль</h2>
+        <form id="changePasswordForm">
+            <div class="form-group">
+                <b><label for="password">Новый пароль:</label></b>
+                <input class="password-input" type="text" id="password" name="password" maxlength="255" placeholder="Введите новый пароль" required></input>
+            </div>
+
+            <div class="form-group">
+                <b><label for="checkPassword">Подтвердите новый пароль:</label></b>
+                <input class="password-input" type="text" id="checkPassword" name="password" maxlength="255" placeholder="Введите пароль ещё раз" required></input>
+            </div>
+
+            <button class="recover-button" type="submit">Сменить пароль</button>
+        </form>
+    </div>
+</main>
+<footer>
+
+<!--    {{>footer_bar}}-->
+
+</footer>
+</body>
+</html>

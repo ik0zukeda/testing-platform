@@ -1,5 +1,5 @@
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { Module } from "@nestjs/common";
+import { MiddlewareConsumer, Module, RequestMethod } from "@nestjs/common";
 import { AppController } from "./controllers/app.controller";
 import { AppService } from "./services/app.service";
 import { Organization } from "./entities/Organization";
@@ -32,6 +32,13 @@ import { TestAttemptService } from "./services/TestAttemptService";
 import { AttemptDetailService } from "./services/AttemptDetailService";
 import { Recover } from "./entities/Recover";
 import { RecoverService } from "./services/RecoverService";
+import { AuthMiddleware } from "./middlewares/AuthMiddleware";
+import { APP_GUARD } from "@nestjs/core";
+import { RolesGuard } from "./models/RolesGuard";
+import { AuthViewMiddleware } from "./middlewares/AuthViewMiddleware";
+import { TeacherRoleMiddleware } from "./middlewares/TeacherRoleMiddleware";
+import { StudentRoleMiddleware } from "./middlewares/StudentRoleMiddleware";
+import { AdminRoleMiddleware } from "./middlewares/AdminRoleMiddleware";
 
 @Module({
     imports: [
@@ -95,9 +102,77 @@ import { RecoverService } from "./services/RecoverService";
         TestService,
         TestAttemptService,
         AttemptDetailService,
-        RecoverService
+        RecoverService,
+        {
+            provide: APP_GUARD,
+            useClass: RolesGuard
+        }
     ],
     exports: [TypeOrmModule]
 })
 export class AppModule {
+    configure(consumer: MiddlewareConsumer) {
+        consumer
+            .apply(AuthMiddleware)
+            .exclude({ path: "/", method: RequestMethod.ALL },
+                { path: "/api/auth/login", method: RequestMethod.ALL },
+                { path: "/api/auth/logout", method: RequestMethod.ALL },
+                { path: "/api/auth/register", method: RequestMethod.ALL },
+                { path: "/api/auth/activate", method: RequestMethod.ALL },
+                { path: "/api/auth/check_invite_link", method: RequestMethod.ALL },
+                { path: "/api/auth/recover_password", method: RequestMethod.ALL },
+                { path: "/api/auth/check_recover_link", method: RequestMethod.ALL },
+                { path: "/api/auth/update_password_after_recover", method: RequestMethod.ALL }
+            )
+            .forRoutes({ path: "/api/*", method: RequestMethod.ALL });
+
+        consumer
+            .apply(AuthViewMiddleware)
+            .forRoutes({ path: "/changePassword", method: RequestMethod.ALL },
+                { path: "/profile", method: RequestMethod.ALL },
+                { path: "/active_tests", method: RequestMethod.ALL },
+                { path: "/test", method: RequestMethod.ALL },
+                { path: "/organization", method: RequestMethod.ALL },
+                { path: "/manage-organization", method: RequestMethod.ALL },
+                { path: "/topic", method: RequestMethod.ALL },
+                { path: "/manage-topics", method: RequestMethod.ALL },
+                { path: "/question", method: RequestMethod.ALL },
+                { path: "/create_test", method: RequestMethod.ALL },
+                { path: "/generated_test", method: RequestMethod.ALL },
+                { path: "/update_test", method: RequestMethod.ALL },
+                { path: "/stat", method: RequestMethod.ALL },
+                { path: "/student_test_stat", method: RequestMethod.ALL },
+                { path: "/groups", method: RequestMethod.ALL },
+                { path: "/manage-groups", method: RequestMethod.ALL },
+                { path: "/test_stats", method: RequestMethod.ALL });
+
+        consumer
+            .apply(TeacherRoleMiddleware)
+            .forRoutes({ path: "/test_stats", method: RequestMethod.ALL },
+                { path: "/topic", method: RequestMethod.ALL },
+                { path: "/stat", method: RequestMethod.ALL },
+                { path: "/student_test_stat", method: RequestMethod.ALL },
+                { path: "/question", method: RequestMethod.ALL },
+                { path: "/create_test", method: RequestMethod.ALL },
+                { path: "/update_test", method: RequestMethod.ALL },
+                { path: "/groups", method: RequestMethod.ALL },
+                { path: "/manage-topics", method: RequestMethod.ALL }
+            );
+
+        consumer
+            .apply(StudentRoleMiddleware)
+            .forRoutes(
+                { path: "/test", method: RequestMethod.ALL },
+                { path: "/generated_test", method: RequestMethod.ALL },
+
+            );
+
+        consumer
+            .apply(AdminRoleMiddleware)
+            .forRoutes(
+                { path: "/organization", method: RequestMethod.ALL },
+                { path: "/manage-organization", method: RequestMethod.ALL },
+
+            );
+    }
 }

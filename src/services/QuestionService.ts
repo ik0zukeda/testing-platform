@@ -1,5 +1,5 @@
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { AnswerDTO, QuestionDTO, ReturnQuestionDTO } from "../dto/QuestionsDTO";
 import { Question } from "../entities/Question";
 import { AnswerService } from "./AnswerService";
@@ -50,13 +50,35 @@ export class QuestionService {
 
     async receiveWithAnswerText(questionId: number): Promise<ReturnQuestionDTO> {
         const question = await this.receive(questionId);
-        let answerTexts = [];
+        let answers = [];
         for (const q of question.answerIds) {
-            const answerText = await this.answerService.receive(q);
-            answerTexts.push(answerText.answerText);
+            const answer = await this.answerService.receive(q);
+            answers.push({
+                answerId: answer.id,
+                answerText: answer.answerText,
+                isCorrect: answer.isCorrect
+            });
         }
 
-        return new ReturnQuestionDTO(question, answerTexts);
+        return new ReturnQuestionDTO(question, answers);
+    }
+
+    async receiveWithAnswerTextWithoutIsCorrect(questionId: number): Promise<ReturnQuestionDTO> {
+        const question = await this.receive(questionId);
+        let answers = [];
+        for (const q of question.answerIds) {
+            const answer = await this.answerService.receive(q);
+            answers.push({
+                answerId: answer.id,
+                answerText: answer.answerText
+            });
+        }
+
+        return new ReturnQuestionDTO(question, answers);
+    }
+
+    async receiveByIds(questionIds: number[]): Promise<Question[]> {
+        return await this.questionRepository.findBy({ id: In(questionIds) });
     }
 
     async addAnswers(answerDTOS: AnswerDTO[], questionId: number): Promise<Question> {
@@ -86,7 +108,7 @@ export class QuestionService {
         question.answerIds = question.answerIds.filter(id => id !== removeAnswerIdDTO.answerId);
         await this.questionRepository.save(question);
         await this.answerService.delete(removeAnswerIdDTO.answerId);
-        return true
+        return true;
     }
 
     async getTopicQuestionsCount(topicId: number): Promise<number> {
@@ -102,7 +124,7 @@ export class QuestionService {
 
         let returnQuestionDTOs: ReturnQuestionDTO[] = [];
         for (const q of randomQuestions) {
-            returnQuestionDTOs.push(await this.receiveWithAnswerText(q.id));
+            returnQuestionDTOs.push(await this.receiveWithAnswerTextWithoutIsCorrect(q.id));
         }
 
         return returnQuestionDTOs;
@@ -120,12 +142,15 @@ export class QuestionService {
         return question;
     }
 
-    async delete(questionId: number) {
+    async delete(questionId: number): Promise<{ ok: boolean }> {
         const question = await this.receive(questionId);
         if (question != null) {
+            for (const answerId of question.answerIds) {
+                await this.answerService.delete(answerId);
+            }
             await this.questionRepository.delete(question.id);
         }
 
-        return true;
+        return { ok: true };
     }
 }

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Testing platform - вопрос</title>
+	<link rel="icon" href="/images/logo2.jpg">
+	{{> styles}}
+	<script src="scripts/checkCookie.js"></script>
+	<script src="scripts/signOut.js"></script>
+	<script src="scripts/nav.js"></script>
+	<script src="scripts/checkAuth.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+	<script src="scripts/printQuestion.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+<header>
+	{{>header_content}}
+	<div class="head-bar">
+
+		{{>sign_in}}
+		{{>head_nav_bar}}
+	</div>
+</header>
+<h1>Редактирование вопроса</h1>
+<div class="question-answers-form">
+	<div class="question-form">
+		<label for="questionText">Вопрос:</label><br>
+		<input class="question-input" type="text" id="questionText" /><br><br>
+	</div>
+
+	<h2>Ответы:</h2>
+	<div id="answersContainer"></div>
+	<button onclick="addAnswer()">Добавить ответ</button>
+	<br><br>
+	<button onclick="saveChanges()">Сохранить изменения</button>
+	<button onclick="deleteQuestion()">Удалить вопрос</button>
+</div>
+</body>
+</html>

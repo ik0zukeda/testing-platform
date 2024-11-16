@@ -3,7 +3,6 @@ import { Repository } from "typeorm";
 import { ConflictException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { Test } from "../entities/Test";
 import { CreateTestDTO } from "../dto/CreateTestDTO";
-import { ReceiveTestDTO } from "../dto/ReceiveTestDTO";
 import { AuthService } from "./AuthService";
 import { ERole } from "../models/ERole";
 import { TeacherService } from "./TeacherService";
@@ -20,6 +19,7 @@ import { ReceiveByStudentIdAndTestIdWithStudentDTO } from "../dto/ReceiveByStude
 import { DeleteTestDTO } from "../dto/DeleteTestDTO";
 import { UpdateTestDTO } from "../dto/UpdateTestDTO";
 import { ValidationService } from "./ValidationService";
+import { TestWithUsedAttempts } from "../dto/ReturnTestsDTO";
 
 @Injectable()
 export class TestService {
@@ -34,31 +34,87 @@ export class TestService {
     ) {
     }
 
-    async create(createTestDTO: CreateTestDTO): Promise<Test> {
+    async create(createTestDTO: CreateTestDTO, login: string): Promise<Test> {
+        const user = await this.authService.receiveUser(login);
+        const teacher = await this.teacherService.receiveByUserId(user.id);
+
+        const topicQuestionsCount = await this.questionService.getTopicQuestionsCount(createTestDTO.topicId);
+
+        if (topicQuestionsCount < createTestDTO.questionCount) {
+            throw new ConflictException(`В банке вопросов этой темы недостаточно вопросов для создания теста с выбранным количеством вопросов. Вопросов в банке: ${topicQuestionsCount}`);
+        }
+
+        const existingTest = await this.testRepository.findOneBy({
+            topic: createTestDTO.topicId,
+            testName: createTestDTO.testName
+        });
+
+        if (!ValidationService.isNothing(existingTest)) {
+            throw new ConflictException("Тест с таким названием уже существует");
+        }
+
         return await this.testRepository.save({
             testName: createTestDTO.testName,
             topic: createTestDTO.topicId,
-            teacher: createTestDTO.teacherId,
+            topicId: createTestDTO.topicId,
+            teacher: teacher.id,
+            teacherId: teacher.id,
             questionCount: createTestDTO.questionCount,
-            attempts: createTestDTO.attempts
+            attempts: createTestDTO.attempts,
+            group: createTestDTO.group
         });
     }
 
-    async receiveAll(receiveTestDTO: ReceiveTestDTO): Promise<Test[]> {
-        const login = receiveTestDTO.login;
+    async receiveAll(login: string): Promise<TestWithUsedAttempts[]> {
         const user = await this.authService.receiveUser(login);
 
         if (user.role === ERole.Teacher) {
             const teacher = await this.teacherService.receiveByUserId(user.id);
-            return await this.receiveByTeacherId(teacher.id);
+            const tests = await this.receiveByTeacherId(teacher.id);
+
+            const result: TestWithUsedAttempts[] = [];
+            for (const test of tests) {
+                result.push(new TestWithUsedAttempts(test, "недоступно"));
+            }
+
+            return result;
         } else if (user.role === ERole.Student) {
             const student = await this.studentService.receiveByUserId(user.id);
-            return await this.testRepository.findBy({ group: student.group });
+            const tests = await this.testRepository.find({
+                order: { id: "ASC" },
+                where: { group: student.group },
+                relations: ["teacher", "topic"]
+            });
+
+            const result: TestWithUsedAttempts[] = [];
+            for (const test of tests) {
+                const usedAttempts = await this.testAttemptService.receiveUsedAttemptsByStudentIdAndTestId(student.id, test.id);
+                result.push(new TestWithUsedAttempts(test, usedAttempts));
+            }
+
+            return result;
         }
     }
 
+    async receiveByTestWithUsedAttempts(testId: number, login: string): Promise<TestWithUsedAttempts> {
+        const user = await this.authService.receiveUser(login);
+
+        const student = await this.studentService.receiveByUserId(user.id);
+        const test = await this.testRepository.findOne({
+            where: { id: testId },
+            relations: ["teacher", "topic"]
+        });
+
+        const usedAttempts = await this.testAttemptService.receiveUsedAttemptsByStudentIdAndTestId(student.id, test.id);
+        return new TestWithUsedAttempts(test, usedAttempts);
+    }
+
     async receiveByTestId(testId: number): Promise<Test> {
-        const test = await this.testRepository.findOne({ where: { id: testId }, relations: ["teacher", "topic"] });
+        const test = await this.testRepository.findOne({
+            order: { id: "ASC" },
+            where: { id: testId },
+            relations: ["teacher", "topic"]
+        });
 
         if (test === null) {
             throw new NotFoundException("Теста с таким id не существует.");
@@ -71,11 +127,10 @@ export class TestService {
         return await this.testRepository.find({ where: { teacher: teacherId }, relations: ["teacher", "topic"] });
     }
 
-    async generateTest(generateTestDTO: GenerateTestDTO): Promise<ReturnGeneratedTest> {
+    async generateTest(generateTestDTO: GenerateTestDTO, login: string): Promise<ReturnGeneratedTest> {
         const testId = generateTestDTO.testId;
         const test = await this.receiveByTestId(testId);
 
-        const login = generateTestDTO.login;
         const user = await this.authService.receiveUser(login);
         const student = await this.studentService.receiveByUserId(user.id);
 
@@ -85,22 +140,17 @@ export class TestService {
             throw new ForbiddenException("Использованы все попытки для данного теста");
         }
 
-        const topicQuestionsCount = await this.questionService.getTopicQuestionsCount(test.topic);
-
-        if (topicQuestionsCount < test.questionCount) {
-            throw new ConflictException("В банке вопросов этой темы недостаточно вопросов для создания теста с выбранным количеством вопросов");
-        }
-
         const randomQuestions = await this.questionService.getRandomQuestions(test.questionCount);
         return new ReturnGeneratedTest(testId, randomQuestions);
     }
 
-    async checkTest(checkTestDTO: CheckTestDTO): Promise<boolean> {
-        const login = checkTestDTO.login;
+    async checkTest(checkTestDTO: CheckTestDTO, login: string): Promise<{ score: number }> {
         const user = await this.authService.receiveUser(login);
         const student = await this.studentService.receiveByUserId(user.id);
 
         const test = await this.receiveByTestId(checkTestDTO.testId);
+        const duration = checkTestDTO.duration;
+
         let correctAnswers = 0;
         const allAnswers = checkTestDTO.answers;
 
@@ -125,8 +175,8 @@ export class TestService {
             }
         }
 
-        await this.testAttemptService.create(student.id, test.topic, correctAnswers, test.id);
-        return true;
+        await this.testAttemptService.create(student.id, test.topicId, correctAnswers, test.id, duration, allAnswers.length);
+        return { score: correctAnswers };
     }
 
     async getStudentsResults(getStudentsResultsDTO: GetStudentsResultsDTO): Promise<BestStudentsAttempts> {
@@ -141,13 +191,15 @@ export class TestService {
 
     async update(testId: number, updateTestDTO: UpdateTestDTO) {
         const test = await this.receiveByTestId(testId);
+        updateTestDTO.id = test.id;
 
         if (!ValidationService.isNothing(updateTestDTO.testName)) {
             test.testName = updateTestDTO.testName;
         }
 
-        if (!ValidationService.isNothing(updateTestDTO.topic)) {
-            test.topic = updateTestDTO.topic;
+        if (!ValidationService.isNothing(updateTestDTO.topicId)) {
+            test.topic = updateTestDTO.topicId;
+            test.topicId = updateTestDTO.topicId;
         }
 
         if (!ValidationService.isNothing(updateTestDTO.attempts)) {
@@ -155,6 +207,12 @@ export class TestService {
         }
 
         if (!ValidationService.isNothing(updateTestDTO.questionCount)) {
+            const topicQuestionsCount = await this.questionService.getTopicQuestionsCount(updateTestDTO.topicId);
+
+            if (topicQuestionsCount < updateTestDTO.questionCount) {
+                throw new ConflictException(`В банке вопросов этой темы недостаточно вопросов для создания теста с выбранным количеством вопросов. Вопросов в банке: ${topicQuestionsCount}`);
+            }
+
             test.questionCount = updateTestDTO.questionCount;
         }
 
@@ -162,14 +220,11 @@ export class TestService {
             test.group = updateTestDTO.group;
         }
 
-        await this.testRepository.save(test);
-
-        return test;
+        return await this.testRepository.save(updateTestDTO);
     }
 
-    async delete(deleteTestDTO: DeleteTestDTO) {
+    async delete(deleteTestDTO: DeleteTestDTO, login: string) {
         const testId = deleteTestDTO.testId;
-        const login = deleteTestDTO.login;
 
         const user = await this.authService.receiveUser(login);
         const teacher = await this.teacherService.receiveByUserId(user.id);

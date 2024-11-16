@@ -11,12 +11,14 @@ export class TestAttemptService {
                 private readonly studentService: StudentService) {
     }
 
-    async create(studentId: number, topicId: number, score: number, testId: number): Promise<TestAttempt> {
+    async create(studentId: number, topicId: number, score: number, testId: number, duration: number, questionCount: number): Promise<TestAttempt> {
         return await this.testAttemptRepository.save({
             studentId: studentId,
             topicId: topicId,
             score: score,
-            test: testId
+            testId: testId,
+            timeSpent: duration,
+            questionCount: questionCount
         });
     }
 
@@ -44,7 +46,7 @@ export class TestAttemptService {
     }
 
     async receiveUsedAttemptsByStudentIdAndTestId(studentId: number, testId: number): Promise<number> {
-        return await this.testAttemptRepository.countBy({ studentId: studentId, test: testId });
+        return await this.testAttemptRepository.countBy({ studentId: studentId, testId: testId });
     }
 
     async receiveBestStudentAttempt(studentId: number, testId: number): Promise<BestStudentAttemptDTO> {

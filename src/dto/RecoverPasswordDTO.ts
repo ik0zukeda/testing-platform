@@ -17,10 +17,6 @@ export class UpdatePasswordAfterRecoverDTO {
 }
 
 export class UpdatePasswordDTO {
-    @IsEmail()
-    @IsNotEmpty()
-    login: string;
-
     @IsString()
     @IsNotEmpty()
     password: string;

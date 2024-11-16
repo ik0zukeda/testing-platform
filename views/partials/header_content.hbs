@@ -1,0 +1,24 @@
+<div class="header-content" style="justify-content: center">
+<!--    <img class="logo-image" src="images/logo.jpg" alt="Логотип" height="200">-->
+    <a class="logo-picture">
+        <h1><img class="logo-image3" src="images/logo3.png" alt="Testing platform" width="400"></h1>
+    </a>
+
+	<script>
+		document.addEventListener("DOMContentLoaded", function() {
+            const role = localStorage.getItem("role");
+			const logoLink = document.querySelector(".logo-picture");
+
+			if (role === "0" || role === "1") {
+				logoLink.setAttribute("href", "active_tests");
+			} else if (role === "2") {
+				logoLink.setAttribute("href", "manage-organization");
+			} else if (role === undefined || role === null) {
+				logoLink.setAttribute("href", "auth");
+			} else {
+				logoLink.setAttribute("href", "auth");
+			}
+		})
+	</script>
+<!--    <img class="logo-image2" src="images/logo2.jpg" alt="Логотип" height="200">-->
+</div>

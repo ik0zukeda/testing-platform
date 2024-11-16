@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="keywords"
+		  content="платформа для тестирования студентов">
+	<title>Testing platform - организации</title>
+	<link rel="icon" href="/images/logo2.jpg">
+	{{> styles}}
+	<script src="scripts/checkCookie.js"></script>
+	<script src="scripts/signOut.js"></script>
+	<script src="scripts/nav.js"></script>
+
+	<script src="scripts/checkAuth.js"></script>
+	<!--        <link rel="stylesheet" href="/styles/outlines.css">-->
+</head>
+<body>
+<header>
+	{{>header_content}}
+	<div class="head-bar">
+
+		{{>sign_in}}
+		{{>head_nav_bar}}
+	</div>
+</header>
+<main>
+	<h1>Все доступные организации:</h1>
+
+	<table class="userTable">
+		<thead>
+		<tr>
+			<th>Id</th>
+			<th>Название</th>
+			<th>Адрес</th>
+			<th>Телефон</th>
+			<th>Почта</th>
+			<th>Ответственное лицо</th>
+		</tr>
+		</thead>
+		<tbody id="userTableBody">
+		</tbody>
+
+	</table>
+
+	<div class="loader" style="display: none;">
+		<div class="running-cat-container">
+			<img class="running-cat" src="images/raccoon-rave.gif" alt="Running Cat">
+		</div>
+		<div class="loading-text">Загрузка</div>
+	</div>
+
+	<button onclick="addUser()" class="addUserButton">Добавить организацию</button>
+	<div class="add-user-form" style="display: none">
+		<form id="addUserForm">
+			<div class="form-group">
+				<b><label for="name">Название:</label></b>
+				<input class="name-input" type="text" id="name" name="name" maxlength="255"
+					   placeholder="Введите название" required>
+			</div>
+
+			<div class="form-group">
+				<b><label for="address">Адрес:</label></b>
+				<input class="address-input" type="text" id="address" name="address" maxlength="255"
+					   placeholder="Введите адрес">
+			</div>
+
+			<div class="form-group">
+				<b><label for="phone">Телефон:</label></b>
+				<input class="phone-input" type="tel" id="phone" name="phone" maxlength="12"
+					   placeholder="Введите телефон">
+			</div>
+
+			<div class="form-group">
+				<b><label for="email">Почта:</label></b>
+				<input class="email-input" type="email" id="email" name="email" maxlength="255"
+					   placeholder="Введите почту">
+			</div>
+
+			<div class="form-group">
+				<b><label for="responsiblePerson">Ответственное лицо:</label></b>
+				<input class="responsiblePerson-input" type="text" id="responsiblePerson" name="responsiblePerson"
+					   maxlength="255"
+					   placeholder="Введите ответственное лицо">
+			</div>
+
+			<button class="add-user-button" type="submit">Добавить организацию</button>
+		</form>
+		<p>
+			<button onclick="cancelAddUser()" class="cancel-add-user-button">Отмена</button>
+		</p>
+	</div>
+	<script>
+		document.getElementById("phone").addEventListener("input", function(e) {
+			const input = e.target;
+			const value = input.value;
+
+			const cleanValue = value.replace(/[^0-9+]/g, "");
+
+			if (cleanValue.startsWith("+7")) {
+				input.maxLength = 12;
+			} else {
+				input.maxLength = 11;
+			}
+
+			input.value = cleanValue;
+		});
+	</script>
+	<script src="scripts/loading.js"></script>
+	<script src="scripts/load-organizations.js"></script>
+</main>
+<footer>
+
+	<!--    {{>footer_bar}}-->
+
+</footer>
+</body>
+</html>

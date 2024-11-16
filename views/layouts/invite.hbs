@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="keywords"
+		  content="платформа для тестирования студентов">
+	<title>Testing platform - вступление</title>
+	<link rel="icon" href="/images/logo2.jpg">
+	{{> styles}}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+	<script src="scripts/checkCookie.js"></script>
+	<script src="scripts/signOut.js"></script>
+	<script src="scripts/checkAuth.js"></script>
+	<script src="scripts/invite.js"></script>
+	<!--                <link rel="stylesheet" href="/styles/outlines.css">-->
+</head>
+<body>
+<header>
+	{{>header_content}}
+	<div class="head-bar">
+	</div>
+</header>
+<main>
+	<div class="invitation" style="display: none">
+		<h1 class="h1-invitation">Добро пожаловать</h1>
+		<!--		<img class="404-image" src="images/grustnii-kotik-19.jpg" alt="404-image" height="600">-->
+		<div class="invitation-text">
+		</div>
+		<p><a href="active_tests">На главную страницу</a></p>
+	</div>
+
+	<div class="login-form">
+		<h2>Для добавления в организацию необходимо войти в аккаунт</h2>
+		<form id="loginForm">
+			<div class="form-group">
+				<b><label for="login-email">Почта:</label></b>
+				<input class="email-input" type="email" id="login-email" name="login-email" maxlength="255"
+					   placeholder="Введите почту" required>
+			</div>
+
+			<div class="form-group">
+				<b><label for="login-password">Пароль:</label></b>
+				<input class="password-input" type="password" id="login-password" name="login-password" maxlength="255"
+					   placeholder="Введите пароль" required>
+			</div>
+			<button class="login-button" type="submit">Войти</button>
+		</form>
+
+		<p class="register-link">Ещё нет аккаунта?</p>
+		<a class="hide-login-form-a" style="color: blue; border-bottom: 2px solid blue; cursor: pointer">Зарегистрироваться</a>
+	</div>
+
+	<div class="register-form" style="display: none">
+		<h2>Для добавления в организацию необходимо зарегистрировать аккаунт</h2>
+		<form id="registerForm">
+			<div class="form-group">
+				<b><label for="register-email">Почта:</label></b>
+				<input class="email-input" type="email" id="register-email" name="register-email" maxlength="255"
+					   placeholder="Введите почту" required>
+			</div>
+
+			<div class="form-group">
+				<b><label for="register-password">Пароль:</label></b>
+				<input class="password-input" type="password" id="register-password" name="register-password" maxlength="255"
+					   placeholder="Введите пароль" required>
+			</div>
+			<button class="register-button" type="submit">Зарегистрироваться</button>
+		</form>
+
+		<p class="auth-link">Уже есть аккаунт?</p>
+		<a class="hide-register-form-a" style="color: blue; border-bottom: 2px solid blue; cursor: pointer">Войти</a>
+	</div>
+</main>
+<footer>
+</footer>
+</body>
+</html>

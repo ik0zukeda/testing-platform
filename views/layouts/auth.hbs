@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="keywords"
+          content="платформа для тестирования студентов">
+    <title>Testing platform - вход</title>
+    <link rel="icon" href="/images/logo2.jpg">
+    {{> styles}}
+    <script src="scripts/checkCookie.js"></script>
+    <script src="scripts/signOut.js"></script>
+    <script src="scripts/auth.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <!--            <link rel="stylesheet" href="/styles/outlines.css">-->
+</head>
+<body>
+<header>
+    {{>header_content}}
+</header>
+<main>
+    <div class="login-form">
+        <h2>Войти в аккаунт</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <b><label for="email">Почта:</label></b>
+                <input class="email-input" type="email" id="email" name="email" maxlength="255" placeholder="Введите почту" required>
+            </div>
+
+            <div class="form-group">
+                <b><label for="password">Пароль:</label></b>
+                <input class="password-input" type="password" id="password" name="password" maxlength="255" placeholder="Введите пароль" required>
+            </div>
+
+            <button class="login-button" type="submit">Войти</button>
+        </form>
+
+        <script src="scripts/auth.js"></script>
+<!--        <p class="register-link">Еще нет аккаунта?</p>-->
+<!--        <a href="register">Зарегистрироваться</a>-->
+        <p class="recover-link">Забыли пароль?</p>
+        <a href="forgot-password">Восстановить пароль</a>
+    </div>
+
+</main>
+<footer>
+</footer>
+</body>
+</html>

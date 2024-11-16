@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="keywords"
+		  content="платформа для тестирования студентов">
+	<title>Testing platform - группы</title>
+	<link rel="icon" href="/images/logo2.jpg">
+	{{> styles}}
+	<script src="scripts/checkCookie.js"></script>
+	<script src="scripts/signOut.js"></script>
+	<script src="scripts/nav.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+	<script src="scripts/checkAuth.js"></script>
+	<!--        <link rel="stylesheet" href="/styles/outlines.css">-->
+</head>
+<body>
+<header>
+	{{>header_content}}
+	<div class="head-bar">
+
+		{{>sign_in}}
+		{{>head_nav_bar}}
+	</div>
+</header>
+<main>
+	<h1>Мои группы:</h1>
+
+	<div class="product-filter">
+		<div class="products">
+			<div class="loader" style="display: none;">
+				<div class="running-cat-container">
+					<img class="running-cat" src="images/raccoon-rave.gif" alt="Running Cat">
+				</div>
+				<div class="loading-text">Загрузка</div>
+			</div>
+
+			<div id="products-list" class="product-list">
+				<div class="error-message" style="display: none;">⚠ Что-то пошло не так</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="add-user-form">
+		<div class="form-group">
+			<label for="groupDropdown">Добавить группу:</label>
+			<select id="groupDropdown" class="form-control"></select>
+			<button id="addGroupButton" class="btn btn-primary">Добавить</button>
+		</div>
+	</div>
+	<!--	<button onclick="addUser()" class="addUserButton">Добавить организацию</button>-->
+	<!--	<div class="add-user-form" style="display: none">-->
+	<!--		<form id="addUserForm">-->
+	<!--			<div class="form-group">-->
+	<!--				<b><label for="name">Название:</label></b>-->
+	<!--				<input class="name-input" type="text" id="name" name="name" maxlength="255"-->
+	<!--					   placeholder="Введите название" required>-->
+	<!--			</div>-->
+
+	<!--			<button class="add-user-button" type="submit">Добавить организацию</button>-->
+	<!--		</form>-->
+	<!--		<p>-->
+	<!--			<button onclick="cancelAddUser()" class="cancel-add-user-button">Отмена</button>-->
+	<!--		</p>-->
+	<!--	</div>-->
+	<script src="scripts/loading.js"></script>
+	<script src="scripts/load-groups.js"></script>
+</main>
+<footer>
+
+	<!--    {{>footer_bar}}-->
+
+</footer>
+</body>
+</html>

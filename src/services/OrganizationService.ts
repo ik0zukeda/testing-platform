@@ -1,5 +1,5 @@
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { Organization } from "../entities/Organization";
 import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { CreateOrganizationDTO } from "../dto/CreateOrganizationDTO";
@@ -15,8 +15,10 @@ import { ValidationService } from "./ValidationService";
 @Injectable()
 export class OrganizationService {
     constructor(
-        @InjectRepository(Organization)
-        private organizationRepository: Repository<Organization>
+        @InjectRepository(Organization) private organizationRepository: Repository<Organization>,
+        @InjectRepository(Teacher) private readonly teacherRepository: Repository<Teacher>,
+        @InjectRepository(Student) private readonly studentRepository: Repository<Student>,
+        @InjectRepository(Topic) private readonly topicRepository: Repository<Topic>
     ) {
     }
 
@@ -67,6 +69,19 @@ export class OrganizationService {
         }
 
         return organization;
+    }
+
+    async getOrganizationWithEntities(name: string) {
+        const organization = await this.receiveByName(name);
+
+        const teachers = await this.teacherRepository.findBy({ id: In(organization.teacherIds) });
+        const students = await this.studentRepository.findBy({ id: In(organization.studentIds) });
+
+        return {
+            ...organization,
+            teachers,
+            students
+        };
     }
 
     async addStudent(organization: Organization, student: Student): Promise<boolean> {
@@ -143,5 +158,9 @@ export class OrganizationService {
         await this.organizationRepository.save(organization);
 
         return organization;
+    }
+
+    async receiveAll() {
+        return await this.organizationRepository.find({ order: { id: "ASC" } });
     }
 }

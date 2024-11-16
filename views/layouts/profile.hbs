@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="keywords"
+          content="платформа для тестирования студентов">
+    <title>Testing platform - личный кабинет</title>
+    <link rel="icon" href="/images/logo2.jpg">
+    {{> styles}}
+    <script src="scripts/checkCookie.js"></script>
+    <script src="scripts/signOut.js"></script>
+    <script src="scripts/checkAuth.js"></script>
+    <script src="scripts/changePassword.js"></script>
+
+    <!--                <link rel="stylesheet" href="/styles/outlines.css">-->
+</head>
+<body>
+<header>
+    {{>header_content}}
+    <div class="head-bar">
+        {{>sign_out_cart}}
+        {{>head_nav_bar}}
+    </div>
+</header>
+<main>
+    <form id="manageRoles" action="manage-organization"></form>
+    <h2>Добро пожаловать в личный кабинет!</h2>
+
+    <form class="change-password">
+        <button class="change-password-button" type="submit" id="changePasswordButton">Сменить пароль</button>
+    </form>
+</main>
+<footer>
+
+<!--    {{>footer_bar}}-->
+
+</footer>
+</body>
+</html>

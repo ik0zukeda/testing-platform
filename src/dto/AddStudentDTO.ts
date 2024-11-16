@@ -1,4 +1,4 @@
-import { IsArray, IsNotEmpty, IsNumber } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class AddStudentDTO {
     @IsNumber()
@@ -11,13 +11,9 @@ export class AddStudentDTO {
 }
 
 export class AddGroupsDTO {
-    @IsArray()
+    @IsString()
     @IsNotEmpty()
-    groups: string[];
-
-    @IsNumber()
-    @IsNotEmpty()
-    teacherId: number;
+    group: string;
 }
 
 export class ReceiveTeacherGroups {

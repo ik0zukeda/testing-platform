@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="keywords"
+          content="платформа для тестирования студентов">
+    <title>Testing platform - статистика</title>
+    <link rel="icon" href="/images/logo2.jpg">
+    {{> styles}}
+    <script src="scripts/checkCookie.js"></script>
+    <script src="scripts/signOut.js"></script>
+    <script src="scripts/nav.js"></script>
+    <script src="scripts/checkAuth.js"></script>
+	<script src="scripts/getTestStats.js"></script>
+
+
+
+    <!--        <link rel="stylesheet" href="/styles/outlines.css">-->
+</head>
+<body>
+<header>
+    {{>header_content}}
+    <div class="head-bar">
+
+        {{>sign_in}}
+        {{>head_nav_bar}}
+    </div>
+</header>
+<main>
+	<div id="temp"></div>
+	<div class="product-filter">
+		<div class="products">
+			<div class="products-head">
+				<h2></h2>
+			</div>
+
+			<div id="avgScore"></div>
+
+			<div id="avgTime"></div>
+
+			<div class="loader" style="display: none;">
+				<div class="running-cat-container">
+					<img class="running-cat" src="images/raccoon-rave.gif" alt="Running Cat">
+				</div>
+				<div class="loading-text">Загрузка</div>
+			</div>
+
+			<div id="products-list" class="product-list">
+				<div class="error-message" style="display: none;">⚠ Что-то пошло не так</div>
+			</div>
+		</div>
+	</div>
+</main>
+<footer>
+
+<!--    {{>footer_bar}}-->
+
+</footer>
+</body>
+</html>

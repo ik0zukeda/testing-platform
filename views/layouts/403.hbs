@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="keywords"
+          content="платформа для тестирования студентов">
+    <title>Testing platform - Ошибка 403</title>
+    <link rel="icon" href="/images/logo2.jpg">
+    {{> styles}}
+    <script src="scripts/checkCookie.js"></script>
+    <script src="scripts/signOut.js"></script>
+    <script src="scripts/checkAuth.js"></script>
+
+</head>
+<body>
+<header>
+    {{>header_content}}
+    <div class="head-bar">
+
+        {{>sign_in}}
+        {{>head_nav_bar}}
+    </div>
+</header>
+<main>
+    <div class="error403">
+        <h1 class="h1-403">Ошибка 403 😾</h1>
+        <img class="403-image" src="images/zloj_kotik.jpg" alt="404-image" height="600">
+        <div class="error403-text">
+            Вы не имеете права находиться на этой странице!
+        </div>
+        <p><a class="to-main" href="active_tests">На главную страницу</a></p>
+    </div>
+	<script>
+		document.addEventListener("DOMContentLoaded", function() {
+			const role = localStorage.getItem("role");
+			const toMain = document.querySelector(".to-main");
+
+			if (role === "0" || role === "1") {
+				toMain.setAttribute("href", "active_tests");
+			} else if (role === "2") {
+				toMain.setAttribute("href", "manage-organization");
+			} else if (role === undefined || role === null) {
+				toMain.setAttribute("href", "auth");
+			} else {
+				toMain.setAttribute("href", "auth");
+			}
+		})
+	</script>
+</main>
+<footer>
+<!--    {{>footer_bar}}-->
+
+</footer>
+</body>
+</html>

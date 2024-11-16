@@ -4,8 +4,4 @@ export class DeleteTestDTO {
     @IsNumber()
     @IsNotEmpty()
     testId: number;
-
-    @IsString()
-    @IsNotEmpty()
-    login: string;
 }

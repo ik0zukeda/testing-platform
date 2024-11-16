@@ -10,10 +10,10 @@ export class Test {
     @Column({ nullable: false })
     testName: string;
 
-    @Column({ nullable: false })
+    @Column({ nullable: true })
     teacherId: number;
 
-    @Column({ nullable: false })
+    @Column({ nullable: true })
     topicId: number;
 
     @ManyToOne(() => Topic, { nullable: false })
@@ -35,16 +35,4 @@ export class Test {
 
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     createdAt: Date;
-
-    constructor(
-        testName: string,
-        topicId: number,
-        teacherId: number,
-        createdAt: Date
-    ) {
-        this.testName = testName;
-        this.topic = topicId;
-        this.teacher = teacherId;
-        this.createdAt = createdAt;
-    }
 }

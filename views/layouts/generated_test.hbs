@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="keywords"
+		  content="платформа для тестирования студентов">
+	<title>Testing platform - прохождение теста</title>
+	<link rel="icon" href="/images/logo2.jpg">
+	{{> styles}}
+	<script src="scripts/checkCookie.js"></script>
+	<script src="scripts/signOut.js"></script>
+	<script src="scripts/nav.js"></script>
+	<script src="scripts/checkAuth.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+	<script src="scripts/take-test.js"></script>
+	<style>
+		.test-name, #timer {
+			text-align: center;
+		}
+
+		#timer {
+			color: white;
+		}
+
+		.question {
+			display: none;
+			margin-bottom: 20px;
+			padding: 15px;
+			border: 1px solid #ddd;
+			border-radius: 5px;
+		}
+
+		.question.active {
+			display: block;
+		}
+
+		.question h3 {
+			margin-bottom: 10px;
+		}
+
+		.answer {
+			margin-bottom: 10px;
+		}
+
+		.answer input {
+			margin-right: 10px;
+		}
+
+		.buttons {
+			text-align: center;
+			margin-top: 20px;
+		}
+
+		#submitTest, #nextQuestion {
+			padding: 10px;
+			background-color: #4CAF50;
+			color: white;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+			font-size: 16px;
+		}
+	</style>
+
+	<!--        <link rel="stylesheet" href="/styles/outlines.css">-->
+</head>
+<body>
+<header>
+	{{>header_content}}
+	<div class="head-bar">
+
+		{{>sign_in}}
+		{{>head_nav_bar}}
+	</div>
+</header>
+<main>
+	<h1 class="test-name"></h1>
+	<div id="disclaimer">Во время прохождения теста тщательно думайте над каждым вопросом. Переход к предыдущему
+		вопросу невозможен.
+		<br><button id="okButton">Понятно</button>
+	</div>
+	<div id="timer" style="display: none">Время: 00:00</div>
+	<div id="testContainer" style="display: none"></div>
+
+	<div class="buttons" style="display: none">
+		<button id="nextQuestion">Следующий вопрос</button>
+		<button id="submitTest" style="display: none;">Отправить тест</button>
+	</div>
+</main>
+<footer>
+
+	<!--    {{>footer_bar}}-->
+
+</footer>
+</body>
+</html>

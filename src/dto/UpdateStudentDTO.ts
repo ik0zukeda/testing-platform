@@ -16,8 +16,4 @@ export class UpdateStudentDTO {
     @IsString()
     @IsOptional()
     email: string;
-
-    @IsBoolean()
-    @IsOptional()
-    isActive: boolean;
 }

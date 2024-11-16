@@ -20,14 +20,18 @@ export class CheckQuestionDTO {
     answerTexts: string[];
 }
 
+export class ReturnAnswerDTO extends AnswerDTO {
+    answerId: number;
+}
+
 export class ReturnQuestionDTO {
     id: number;
     questionText: string;
-    answerTexts: string[];
+    answers: ReturnAnswerDTO[];
 
-    constructor(question: Question, answerTexts: string[]) {
+    constructor(question: Question, answers: ReturnAnswerDTO[]) {
         this.id = question.id;
         this.questionText = question.questionText;
-        this.answerTexts = answerTexts;
+        this.answers = answers;
     }
 }

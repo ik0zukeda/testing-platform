@@ -1,12 +1,18 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from '../services/app.service';
+import { Controller, Get, Param, Redirect, Res } from "@nestjs/common";
+import { Response } from "express";
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+    constructor() {
+    }
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
-  }
+    @Get()
+    @Redirect("auth", 302)
+    root() {
+    }
+
+    @Get(":pageName")
+    async dynamicPage(@Param("pageName") pageName: string, @Res() res: Response) {
+        res.render(pageName);
+    }
 }
