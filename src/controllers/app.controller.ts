@@ -15,4 +15,9 @@ export class AppController {
     async dynamicPage(@Param("pageName") pageName: string, @Res() res: Response) {
         res.render(pageName);
     }
+
+    @Get("test/test")
+    test() {
+        return 'Hello World!'
+    }
 }
