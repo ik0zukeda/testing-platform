@@ -145,7 +145,7 @@ function submitQuestionForm() {
             });
 
             row.addEventListener("click", () => {
-                window.location.href = `question?id=${newQuestionId}`;
+                window.location.href = `question?id=${newQuestionId}&topic=${topicId}`;
             });
 
             addQuestionForm.classList.remove("disabled");
@@ -351,7 +351,14 @@ async function loadUserData() {
         const topic = await response.json();
 
         if (!response.ok) {
-            throw new Error(topic.message);
+            toastr.options = {
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000"
+            };
+
+            toastr.error(`Ошибка: ${topic.message}`);
+            return;
         }
 
         const topicName = topic.name;

@@ -8,6 +8,7 @@ import { TopicService } from "./TopicService";
 import { ValidationService } from "./ValidationService";
 import { UpdateQuestionDTO } from "../dto/UpdateQuestionDTO";
 import { RemoveAnswerIdDTO } from "../dto/RemoveAnswerIdDTO";
+import { Test } from "../entities/Test";
 
 @Injectable()
 export class QuestionService {
@@ -115,9 +116,11 @@ export class QuestionService {
         return await this.questionRepository.countBy({ topicId: topicId });
     }
 
-    async getRandomQuestions(n: number): Promise<ReturnQuestionDTO[]> {
+    async getRandomQuestions(test: Test): Promise<ReturnQuestionDTO[]> {
+        const n = test.questionCount;
         const randomQuestions = await this.questionRepository
             .createQueryBuilder("question")
+            .where(`question.topicId=${test.topicId}`)
             .orderBy("RANDOM()")
             .limit(n)
             .getMany();
