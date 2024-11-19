@@ -15,6 +15,7 @@ import { CheckInviteLinkDTO } from "../dto/CheckInviteLinkDTO";
 import { Roles, RolesGuard } from "../models/RolesGuard";
 import { ERole } from "../models/ERole";
 import { ActivateActorDTO } from "../dto/ActivateActorDTO";
+import { DeleteUserDTO } from "../dto/DeleteUserDTO";
 
 @Controller("api/auth")
 @UseGuards(RolesGuard)
@@ -74,5 +75,11 @@ export class AuthController {
     @Post("update_password")
     async updatePassword(@Req() req: any, @Body() body: UpdatePasswordDTO): Promise<boolean> {
         return await this.authService.updatePassword(body, req.user.login);
+    }
+
+    @Post("delete")
+    @Roles(ERole.Administrator)
+    async delete(@Body() body: DeleteUserDTO): Promise<boolean> {
+        return await this.authService.delete(body);
     }
 }

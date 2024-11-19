@@ -38,6 +38,12 @@ export class OrganizationController {
         return await this.organizationService.create(createOrganizationDTO);
     }
 
+    @Post("create_with_return")
+    @Roles(ERole.Administrator)
+    async create_with_return(@Body() createOrganizationDTO: CreateOrganizationDTO): Promise<Organization> {
+        return await this.organizationService.create_with_return(createOrganizationDTO);
+    }
+
     @Put("update/:id")
     @Roles(ERole.Administrator)
     async update(@Param("id") id: number, @Body() updateOrganizationDTO: UpdateOrganizationDTO): Promise<Organization> {
