@@ -87,6 +87,9 @@ async function createTest(event) {
         };
 
         toastr.success(`Тест успешно создан`);
+        setTimeout(() => {
+            window.location.href = `active_tests`;
+        }, 3000);
     } else {
         const error = await response.json();
         toastr.options = {

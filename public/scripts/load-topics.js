@@ -61,7 +61,10 @@ function addTopicEvent() {
         row.addEventListener("click", () => {
             window.location.href = `topic?id=${topic_id}`;
         });
-        cancelAddTopic()
+
+        addTopicForm.classList.remove("disabled");
+        document.getElementById("name").value = "";
+        // cancelAddTopic()
     });
 }
 
@@ -111,7 +114,15 @@ async function loadTopicData() {
         }
 
         if (!response.ok) {
-            throw new Error("Ошибка при загрузке данных");
+            const er = await response.json();
+            toastr.options = {
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000"
+            };
+
+            toastr.error(`Ошибка: ${er.message}`);
+            return;
         }
 
         const topicData = await response.json();

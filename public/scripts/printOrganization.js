@@ -84,7 +84,12 @@ function add_student() {
         }
 
         studentTableBody.appendChild(row);
-        cancelAddStudent();
+
+        addStudentForm.classList.remove("disabled");
+        document.getElementById("student-name").value = "";
+        document.getElementById("student-group").value = "";
+
+        // cancelAddStudent();
     });
 }
 
@@ -96,7 +101,7 @@ function addStudent() {
 
     const addStudentForm = document.querySelector(".add-student-form");
     addStudentForm.style.display = "block";
-
+    window.scrollTo(0, document.body.scrollHeight);
 }
 
 function cancelAddStudent() {
@@ -177,7 +182,11 @@ function add_teacher() {
         }
 
         teacherTableBody.appendChild(row);
-        cancelAddTeacher();
+
+        addTeacherForm.classList.remove("disabled");
+        document.getElementById("teacher-name").value = "";
+
+        // cancelAddTeacher();
     });
 }
 
@@ -189,7 +198,7 @@ function addTeacher() {
 
     const addTeacherForm = document.querySelector(".add-teacher-form");
     addTeacherForm.style.display = "block";
-
+    window.scrollTo(0, document.body.scrollHeight);
 }
 
 function cancelAddTeacher() {
@@ -472,11 +481,16 @@ async function saveRow(rowId, subject) {
         let groupCell = row.querySelector(`.student-group-cell`);
         let isActiveCell = row.querySelector(`.student-isActive-cell`);
         let emailCell = row.querySelector(`.student-email-cell`);
+        const originEmail = emailCell.getAttribute("data-original-value");
+
         let actionsCell = row.querySelector(`.student-actions`);
 
         const name = document.getElementById(`edit-student-name-${rowId}`).value;
         const group = document.getElementById(`edit-student-group-${rowId}`).value;
-        const email = document.getElementById(`edit-student-email-${rowId}`).value;
+        let email = ""
+        if (originEmail !== document.getElementById(`edit-student-email-${rowId}`).value) {
+            email = document.getElementById(`edit-student-email-${rowId}`).value;
+        }
 
         const data = {
             name: name === "" || name === "null" ? null : name,
@@ -552,10 +566,16 @@ async function saveRow(rowId, subject) {
         let nameCell = row.querySelector(`.teacher-name-cell`);
         let isActiveCell = row.querySelector(`.teacher-isActive-cell`);
         let emailCell = row.querySelector(`.teacher-email-cell`);
+        const originEmail = emailCell.getAttribute("data-original-value");
+
         let actionsCell = row.querySelector(`.teacher-actions`);
 
         const name = document.getElementById(`edit-teacher-name-${rowId}`).value;
-        const email = document.getElementById(`edit-teacher-email-${rowId}`).value;
+        let email = ""
+        if (originEmail !== document.getElementById(`edit-teacher-email-${rowId}`).value) {
+            email = document.getElementById(`edit-teacher-email-${rowId}`).value;
+        }
+
 
         const data = {
             name: name === "" || name === "null" ? null : name,
@@ -719,7 +739,14 @@ async function loadUserData() {
         const org = await response.json();
 
         if (!response.ok) {
-            throw new Error(org.message);
+            toastr.options = {
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000"
+            };
+
+            toastr.error(`Ошибка: ${org.message}`);
+            return;
         }
 
         const orgName = org.name;

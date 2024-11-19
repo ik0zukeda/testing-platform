@@ -161,6 +161,9 @@ async function saveChanges(event) {
         };
 
         toastr.success(`Тест успешно обновлён`);
+        setTimeout(() => {
+            window.location.href = "active_tests";
+        }, 3000);
     } else {
         const error = await response.json();
         toastr.options = {
@@ -203,7 +206,9 @@ async function deleteTest() {
         };
 
         toastr.success(`Тест успешно удалён`);
-        window.location.href = "active_tests";
+        setTimeout(() => {
+            window.location.href = "active_tests";
+        }, 3000);
     } else {
         const error = await response.json();
         toastr.options = {

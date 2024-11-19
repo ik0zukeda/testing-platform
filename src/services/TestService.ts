@@ -140,7 +140,7 @@ export class TestService {
             throw new ForbiddenException("Использованы все попытки для данного теста");
         }
 
-        const randomQuestions = await this.questionService.getRandomQuestions(test.questionCount);
+        const randomQuestions = await this.questionService.getRandomQuestions(test);
         return new ReturnGeneratedTest(testId, randomQuestions);
     }
 

@@ -113,6 +113,7 @@ async function saveChanges() {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const questionId = urlParams.get("id");
+    const topic = urlParams.get("topic");
 
     let success = true;
 
@@ -254,6 +255,9 @@ async function saveChanges() {
         };
 
         toastr.success(`Данные успешно обновлены`);
+        setTimeout(() => {
+            window.location.href = `topic?id=${topic}`;
+        }, 3000);
     }
 }
 
@@ -291,8 +295,16 @@ async function deleteQuestion() {
         toastr.error(`Ошибка при удалении вопроса: ${result.message}`);
         questionForm.classList.remove("disabled");
     } else {
-        alert("Вопрос успешно удалён");
-        window.location.href = `topic?id=${topic}`;
+        toastr.options = {
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "3000"
+        };
+
+        toastr.success(`Вопрос успешно удалён`);
+        setTimeout(() => {
+            window.location.href = `topic?id=${topic}`;
+        }, 3000);
     }
 }
 

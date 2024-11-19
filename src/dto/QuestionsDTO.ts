@@ -1,12 +1,22 @@
 import { Question } from "../entities/Question";
+import { IsArray, IsBoolean, IsNotEmpty, IsString } from "class-validator";
 
 export class AnswerDTO {
+    @IsString()
+    @IsNotEmpty()
     answerText: string;
+
+    @IsBoolean()
+    @IsNotEmpty()
     isCorrect: boolean;
 }
 
 export class QuestionDTO {
+    @IsString()
+    @IsNotEmpty()
     questionText: string;
+
+    @IsArray()
     answers: AnswerDTO[]
 }
 
