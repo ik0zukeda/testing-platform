@@ -9,6 +9,7 @@ describe('StatisticsController (e2e)', () => {
     let adminToken: string;
     let studentToken: string;
     let teacherTest: any;
+    let newTopic: any;
 
     beforeAll(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -44,16 +45,28 @@ describe('StatisticsController (e2e)', () => {
                 group: "M34051",
             })
             .expect(201)).body;
+
+        newTopic = (await request(app.getHttpServer())
+            .post('/api/topic/create')
+            .set('Authorization', `Bearer ${teacherToken}`)
+            .send({name: "New topic"})
+            .expect(201)).body;
     });
 
     afterAll(async () => {
-        console.log(teacherTest);
-
         await request(app.getHttpServer())
             .delete('/api/test/delete')
             .set('Authorization', `Bearer ${teacherToken}`)
             .send({
                 testId: teacherTest.id,
+            });
+
+        await request(app.getHttpServer())
+            .delete('/api/topic/delete')
+            .set('Authorization', `Bearer ${teacherToken}`)
+            .send({
+                organizationId: newTopic.organizationId,
+                topicId: newTopic.id,
             });
 
         await app.close();
@@ -95,4 +108,45 @@ describe('StatisticsController (e2e)', () => {
         expect(allTestsResponse2.body.length).toBeGreaterThanOrEqual(1);
 
     });
+
+    it('AT023: Попытка начать тест после лимита попыток', async () => {
+        await request(app.getHttpServer())
+            .post('/api/test/generate')
+            .set('Authorization', `Bearer ${studentToken}`)
+            .send({
+                testId: 36,
+            })
+            .expect(403);
+    });
+
+    it('AT022: Назначение теста без группы', async () => {
+        await request(app.getHttpServer())
+            .post('/api/test/create')
+            .set('Authorization', `Bearer ${teacherToken}`)
+            .send({
+                testName: 'New test!',
+                topicId: 1,
+                questionCount: 1,
+                attempts: 8
+            })
+            .expect(500);
+    });
+
+    it('AT021: Добавление пустого вопроса', async () => {
+        await request(app.getHttpServer())
+            .post(`/api/question/create/${teacherTest.topicId}`)
+            .set('Authorization', `Bearer ${teacherToken}`)
+            .send({})
+            .expect(500);
+    });
+
+    it('AT010: Назначение теста группе', async () => {
+        expect(teacherTest.group === "M34051").toBe(true);
+    });
+
+    it('AT008: Создание темы', async () => {
+        expect(newTopic !== null).toBe(true);
+    });
+
+
 });
