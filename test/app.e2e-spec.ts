@@ -41,7 +41,7 @@ describe('StatisticsController (e2e)', () => {
                 topicId: 1,
                 questionCount: 1,
                 attempts: 8,
-                group: "M34061",
+                group: "M34051",
             })
             .expect(201)).body;
     });
@@ -75,5 +75,24 @@ describe('StatisticsController (e2e)', () => {
                 info: [],
             }),
         );
+    });
+
+    it('AT011: Получение активных тестов для преподавателей и студентов', async () => {
+        const allTestsResponse1= await request(app.getHttpServer())
+            .get('/api/test/receive_all')
+            .set('Authorization', `Bearer ${teacherToken}`)
+            .expect(200);
+
+        expect(allTestsResponse1.body).toBeInstanceOf(Array);
+        expect(allTestsResponse1.body.length).toBeGreaterThanOrEqual(1);
+
+        const allTestsResponse2 = await request(app.getHttpServer())
+            .get('/api/test/receive_all')
+            .set('Authorization', `Bearer ${studentToken}`)
+            .expect(200);
+
+        expect(allTestsResponse2.body).toBeInstanceOf(Array);
+        expect(allTestsResponse2.body.length).toBeGreaterThanOrEqual(1);
+
     });
 });
