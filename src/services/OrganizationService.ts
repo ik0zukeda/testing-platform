@@ -22,7 +22,7 @@ export class OrganizationService {
     ) {
     }
 
-    async create(createOrganizationDTO: CreateOrganizationDTO): Promise<number> {
+    async createOrg(createOrganizationDTO: CreateOrganizationDTO): Promise<Organization> {
         const organization = await this.organizationRepository.findOneBy({
             name: createOrganizationDTO.name
         });
@@ -33,14 +33,23 @@ export class OrganizationService {
             );
         }
 
-        const newOrganization = await this.organizationRepository.save({
+        return await this.organizationRepository.save({
             name: createOrganizationDTO.name,
             address: createOrganizationDTO.address,
             phone: createOrganizationDTO.phone,
             email: createOrganizationDTO.email,
             responsiblePerson: createOrganizationDTO.responsiblePerson
         });
-        return newOrganization.id;
+
+    }
+
+    async create(createOrganizationDTO: CreateOrganizationDTO): Promise<number> {
+        const organization = await this.createOrg(createOrganizationDTO);
+        return organization.id;
+    }
+
+    async create_with_return(createOrganizationDTO: CreateOrganizationDTO): Promise<Organization> {
+        return await this.createOrg(createOrganizationDTO);
     }
 
     async receiveByName(name: string): Promise<Organization> {

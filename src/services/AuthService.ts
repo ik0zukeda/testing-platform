@@ -26,6 +26,7 @@ import * as jwt from "jsonwebtoken";
 import { Response } from "express";
 import * as process from "node:process";
 import { ActivateActorDTO } from "../dto/ActivateActorDTO";
+import { DeleteUserDTO } from "../dto/DeleteUserDTO";
 
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
@@ -291,5 +292,28 @@ export class AuthService {
         user.login = newLogin;
 
         await this.userRepository.save(user);
+    }
+
+    async delete(body: DeleteUserDTO) {
+        const user = await this.userRepository.findOneBy({ id: body.userId });
+
+        if (!user) {
+            throw new NotFoundException("Такого пользователя нет!");
+        }
+
+        if (user.role === ERole.Teacher) {
+            const teacher = await this.teacherService.receiveByUserId(user.id, false);
+            if (teacher) {
+                await this.teacherService.delete({ organizationId: teacher.organizationId, teacherId: teacher.id });
+            }
+        } else if (user.role === ERole.Student) {
+            const student = await this.studentService.receiveByUserId(user.id, false);
+            if (student) {
+                await this.studentService.delete({ organizationId: student.organizationId, studentId: student.id });
+            }
+        }
+
+        await this.userRepository.delete(user);
+        return true;
     }
 }
