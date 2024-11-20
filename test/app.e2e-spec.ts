@@ -11,9 +11,6 @@ describe("StatisticsController (e2e)", () => {
     let studentToken: string;
     let teacherTest: any;
     let newTopic: any;
-    let registeredTeacher: any;
-    let registeredStudent: any;
-    let registeredUser: any;
     let newQuestion: any;
     let newOrganization: any;
     let newTeacher: any;
@@ -97,16 +94,6 @@ describe("StatisticsController (e2e)", () => {
                 name: "Teacher"
             })
             .expect(201)).body;
-
-        // registeredStudent = (await request(app.getHttpServer())
-        //     .post('/api/student/create')
-        //     .set('Authorization', `Bearer ${adminToken}`)
-        //     .send({
-        //         organizationId: 13,
-        //         name: "tmp",
-        //         group: "M34051",
-        //     })
-        //     .expect(201)).body;
     });
 
     afterAll(async () => {
@@ -163,25 +150,6 @@ describe("StatisticsController (e2e)", () => {
     });
 
     it("AT011: Получение активных тестов для преподавателей и студентов", async () => {
-        const allTestsResponse1 = await request(app.getHttpServer())
-            .get("/api/test/receive_all")
-            .set("Authorization", `Bearer ${teacherToken}`)
-            .expect(200);
-
-        expect(allTestsResponse1.body).toBeInstanceOf(Array);
-        expect(allTestsResponse1.body.length).toBeGreaterThanOrEqual(1);
-
-        const allTestsResponse2 = await request(app.getHttpServer())
-            .get("/api/test/receive_all")
-            .set("Authorization", `Bearer ${studentToken}`)
-            .expect(200);
-
-        expect(allTestsResponse2.body).toBeInstanceOf(Array);
-        expect(allTestsResponse2.body.length).toBeGreaterThanOrEqual(1);
-
-    });
-
-    it("AT001 Регистрация студента по ссылке", async () => {
         const allTestsResponse1 = await request(app.getHttpServer())
             .get("/api/test/receive_all")
             .set("Authorization", `Bearer ${teacherToken}`)

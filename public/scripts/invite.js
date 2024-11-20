@@ -40,7 +40,7 @@ async function checkInviteLink() {
                 "timeOut": "5000"
             };
 
-            toastr.error(`Ошибка: ${message}`);
+            toastr.error(`Ошибка: неверная пригласительная ссылка`);
             throw new Error(message);
         }
         _userData = userData;
